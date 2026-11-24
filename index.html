@@ -566,6 +566,7 @@
             width: 100%;
         }
 
+        /* Botón flotante de música propio */
         .boton-musica {
             position: fixed;
             top: 20px;
@@ -612,12 +613,12 @@
         </div>
     </div>
 
-    <!-- Botón flotante y reproductor de música de YouTube -->
+    <!-- Botón flotante y elemento de audio estándar -->
     <button class="boton-musica" id="botonMusica" onclick="toggleMusica()">♪</button>
-
-    <div id="youtube-audio-container" style="display:none;">
-        <iframe id="yt-player" width="100" height="100" src="https://www.youtube.com/embed/y8-1ms0ypQs?enablejsapi=1&autoplay=1&loop=1" frameborder="0"></iframe>
-    </div>
+    <audio id="audioMusica" loop>
+        <source src="cancion.mp3" type="audio/mp4">
+        Tu navegador no soporta audio.
+    </audio>
 
     <div class="container">
         <div class="title-container">
@@ -628,7 +629,7 @@
 
         <div class="single-photo-section">
             <div class="polaroid" style="--rotacion: -1deg;">
-                <img src="https://lh3.googleusercontent.com/d/14XJAcQlX10RGlGklPEKKBqSkWMz2TI73" alt="Johana Foto Principal">
+                <img src="https://lh3.googleusercontent.com/d/12EUZJxrkbD-Fs0NLHLF_fAH5VEmfqBC9" alt="Johana Foto Principal">
                 <p>Johana</p>
             </div>
         </div>
@@ -642,7 +643,7 @@
                 <div class="carousel-inner" id="carouselInner">
                     <div class="carousel-item active">
                         <div class="polaroid-frame">
-                            <img src="https://lh3.googleusercontent.com/d/12EUZJxrkbD-Fs0NLHLF_fAH5VEmfqBC9" alt="Foto Carrusel 1">
+                            <img src="https://lh3.googleusercontent.com/d/14XJAcQlX10RGlGklPEKKBqSkWMz2TI73" alt="Foto Carrusel 1">
                             <p>Momento Único</p>
                         </div>
                     </div>
@@ -780,17 +781,20 @@
     </div>
 
     <script>
+        const audio = document.getElementById('audioMusica');
+        const botonMusica = document.getElementById('botonMusica');
         let reproduciendo = false;
+
         function toggleMusica() {
-            const player = document.getElementById('yt-player');
             if (reproduciendo) {
-                player.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-                document.getElementById('botonMusica').textContent = '🔇';
+                audio.pause();
+                botonMusica.textContent = '🔇';
                 reproduciendo = false;
             } else {
-                player.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                document.getElementById('botonMusica').textContent = '♪';
-                reproduciendo = true;
+                audio.play().then(() => {
+                    botonMusica.textContent = '♪';
+                    reproduciendo = true;
+                }).catch(e => console.log("Reproducción bloqueada por navegador"));
             }
         }
 
@@ -798,11 +802,11 @@
         
         function abrirInvitacion() {
             screenInicial.classList.add('cerrada');
-            // Reproducir música automáticamente al abrir el sobre si el navegador lo permite
-            const player = document.getElementById('yt-player');
-            player.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            document.getElementById('botonMusica').textContent = '♪';
-            reproduciendo = true;
+            // Intentar reproducir automáticamente al hacer clic en abrir el sobre
+            audio.play().then(() => {
+                botonMusica.textContent = '♪';
+                reproduciendo = true;
+            }).catch(e => console.log("Audio requiere interacción manual"));
         }
 
         screenInicial.addEventListener('click', abrirInvitacion);
