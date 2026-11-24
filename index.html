@@ -721,6 +721,9 @@
     </div>
 
     <div class="gallery-container">
+
+
+        
         <h2>Galería</h2>
         
         <div class="polaroid" style="--rotacion: -2deg;">
@@ -749,7 +752,55 @@
         </div>
     </div>
 
-    <script>
+    <!-- Botón flotante de música de YouTube -->
+<button class="boton-musica" id="botonMusica" onclick="toggleMusica()">♪</button>
+
+<div id="youtube-audio-container" style="display:none;">
+    <!-- Reemplaza VIDEO_ID_AQUÍ por el código de tu canción de YouTube -->
+    <iframe id="yt-player" width="100" height="100" src="https://youtu.be/y8-1ms0ypQs?si=X3bHuU-S638ZKGM0" frameborder="0"></iframe>
+</div>
+
+<style>
+    .boton-musica {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #7DD4C5, #B8EDE4);
+        color: #000000;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        box-shadow: 0 4px 15px rgba(125, 212, 197, 0.6);
+        transition: transform 0.3s ease;
+    }
+    .boton-musica:hover {
+        transform: scale(1.1);
+    }
+</style>
+
+<script>
+    let reproduciendo = false;
+    function toggleMusica() {
+        const player = document.getElementById('yt-player');
+        // Esto activa o pausa el reproductor oculto de YouTube
+        if (reproduciendo) {
+            player.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            document.getElementById('botonMusica').textContent = '🔇';
+            reproduciendo = false;
+        } else {
+            player.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            document.getElementById('botonMusica').textContent = '♪';
+            reproduciendo = true;
+        }
+    }
+
         const screenInicial = document.getElementById('screenInicial');
         
         function abrirInvitacion() {
